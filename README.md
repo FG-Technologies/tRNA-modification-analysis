@@ -24,9 +24,9 @@ Steps:
    
    b. [Ionic current analysis](#72-ionic-current-analysis)
    
-9. Basecalled modification analysis
-10. Look for sequence mismatches
-11. Visualise prediction results
+8. [Basecalled modification analysis](#8-basecalled-modification-analysis)
+9. [Look for sequence mismatches](#9-look-for-sequence-mismatches)
+10. [Visualise prediction results](#10-visualise-prediction-results)
 
 ## 1. Dorado basecalling
 Optionally, the pod5 files created by ONT-sequencing can be merged together first or --recursive can be used. 
@@ -116,9 +116,25 @@ samtools view -b -N selection_read_IDs.txt reads_primary_sorted.bam > selected_r
 ```
 ## 7. Remora signal alignment
 ### 7.1 Preparation
-Remora requires a bam file in which -mv tag (move table) is remained after sequence alignment. Because BWA-MEM alignment does not include this option, the required bam tags stored in the raw reads.bam are copied into the aligned_reads.bam, using the python script [bamfile_preparation_for_Remora](bamfile_preparation_for_Remora.py).
+Remora requires a bam file in which -mv tag (move table) is remained after sequence alignment. Because BWA-MEM alignment does not include this option, the required bam tags stored in the raw reads.bam are copied into the selected_reads_primary.bam which contains the sequence alignments, using the python script [bamfile_preparation_for_Remora](bamfile_preparation_for_Remora.py). This creates a selected_reads_primary_tagged.bam file suitable to apply Remora signal alignment.
 
 ### 7.2 Remora's ionic current analysis
 The signal alignment and further downstream analysis of ionic currents are described in the Python Jupyter notebook [Remora_ionic_current_analysis_tRNAs](Remora_ionic_current_analysis_tRNAs.ipynb). 
 
-### 7.2 Ionic current analysis
+## 8. Basecalled modification analysis
+To make a comprehensive overview of the basecalled modifications, [modkit](https://github.com/nanoporetech/modkit) is used:
+```
+modkit pileup selected_reads_primary.bam  modkit_pileup.bed \
+   --max-depth 1000000 \      # to ensure all the reads are used for calculating the filtering thresholds
+   -n 1000000                  # to ensure all the reads are included
+```
+For the IVT-samples no modifications are expected, therefore the filtering thresholds are manually raised to 0.9 (`--filter-threshold 0.9`).
+Further analysis is described in the Python Jupyter notebook [Basecalled_modifications_modkit_analysis_tRNAs](Basecalled_modifications_modkit_analysis_tRNAs.ipynb).
+
+## 9. Look for sequence mismatches
+Sequence mismatches are analysed by using the coverage track of IGV with a coverage allele-fraction threshold (quality weighted) of 0.2. This are reported manually in a .csv file with column names 'Position' and 'Percentage mismatch'.
+
+## 10. Visualise prediction results
+To compare the results from three modification prediction analyses (and the positions with sequence mismatches), heatmap can be made per tRNA of interest. This is described in the Python Jupyter notebook [Heatmaps_statistics_comparison_f5c_Remora](Heatmaps_statistics_comparison_f5c_Remora.ipynb).
+
+In addition, the signal coverage and dwells of the generated signal alignments by f5c and Remora can be analysed using the Python Jupyter notebook [Signal_alignment_comparison_f5c_Remora](Signal_alignment_comparison_f5c_Remora.ipynb)
