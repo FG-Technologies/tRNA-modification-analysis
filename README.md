@@ -1,9 +1,9 @@
 # tRNA modifications analysis
-This repository provides a workflow for predicting modified positions within tRNAs using direct tRNA-sequencing.
+This repository provides a workflow for predicting modified positions within tRNAs using direct tRNA-sequencing. 
 
 <img src="workflow.jpg" alt="Workflow of tRNA modifications analysis" width="500">
 
-Steps:
+Content:
 1. [Dorado basecalling](#1-dorado-basecalling)
 2. [Sequence alignment using BWA-MEM](#2-sequence-alignment-using-bwa-mem)
 3. [Select only forward primary reads](#3-select-only-forward-primary-reads)
@@ -138,3 +138,5 @@ Sequence mismatches are analysed by using the coverage track of IGV with a cover
 To compare the results from three modification prediction analyses (and the positions with sequence mismatches), heatmap can be made per tRNA of interest. This is described in the Python Jupyter notebook [Heatmaps_statistics_comparison_f5c_Remora](Heatmaps_statistics_comparison_f5c_Remora.ipynb).
 
 In addition, the signal coverage and dwells of the generated signal alignments by f5c and Remora can be analysed using the Python Jupyter notebook [Signal_alignment_comparison_f5c_Remora](Signal_alignment_comparison_f5c_Remora.ipynb)
+
+This is created as part of Master Research Project by Isis van Loenen.
