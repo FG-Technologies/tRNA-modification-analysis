@@ -8,13 +8,15 @@ Steps:
 2. [Sequence alignment using BWA-MEM](#2-sequence-alignment-using-bwa-mem)
 3. [Select only forward primary reads](#3-select-only-forward-primary-reads)
 4. [Splicing event prevalence analysis](#4-splicing-event-prevalence-analysis)
-5. F5c signal alignment
+5. [f5c signal alignment](#5-f5c-signal-alignment)
    
-   a. f5c index
+   5.1 [Preparation](#51-preparation)
    
-   b. f5c eventalign
+   5.2 [f5c index](#52-f5c-index)
    
-   c. Ionic current analysis
+   5.3 [f5c eventalign](#53-f5c-eventalign)
+   
+   5.4 [Ionic current analysis](#54-ionic-current-analysis)
    
 7. Remora signal alignment
    
@@ -27,10 +29,12 @@ Steps:
 11. Visualise prediction results
 
 ## 1. Dorado basecalling
-The pod5 files created by ONT-sequencing can be merged together first:
+Optionally, the pod5 files created by ONT-sequencing can be merged together first or --recursive can be used. 
+Make sure to use '--emit-moves' to save the initial signal mapping of the reads required for downstream analyses.
 ```
 dorado basecaller \
-  sup [...].pod5 \
+   -r /path/to/pod5_directory \
+   sup  \
   --modified-bases 2OmeG m5C_2OmeC inosine_m6A_2OmeA pseU_2OmeU \
   --emit-moves \
   --device cuda:all \
@@ -39,7 +43,7 @@ dorado basecaller \
 In the current study Dorado version [1.0.0](https://github.com/nanoporetech/dorado/releases/tag/v1.0.0) is used. 
 
 ## 2. Sequence alignment using BWA-MEM
-Convert the bamfile with unaligned raw reads to fasta file:
+Convert the bamfile with unaligned raw reads to fastq file:
 ```
 samtools fastq reads.bam > reads.fastq
 ```
@@ -62,4 +66,45 @@ samtools index reads_primary_sorted.bam
 ```
 
 ## 4. Splicing event prevalence analysis
-To select the reads which have known intron sequences, a [Bash script](filter_intron_containing_tRNA_reads.sh) is provided.
+To select the reads which have known intron sequences, a [Bash script](filter_intron_containing_tRNA_reads.sh) is provided. This script can be used to facilitate counting the number of reads with introns in [Integrative Genomics Viewer (IGV)](https://igv.org/). 
+
+## 5. f5c signal alignment
+This is done following [f5c workflow](https://github.com/hasindu2008/f5c?tab=readme-ov-file#usage)
+
+### 5.1 Preparation
+Convert the bamfile with unaligned raw reads to fastq file:
+```
+samtools fasta reads.bam > reads.fasta
+```
+The pod5 files need to be converted into blow5 files using [blue-crab tools](https://github.com/Psy-Fer/blue-crab):
+```
+blue-crab p2s [sequencing_run1].pod5 -o [sequencing_run1].blow5
+```
+This needs to be done per sequencing run. When having data from multiple sequencing runs, merging can be done subsequently using [slow5tools](https://github.com/hasindu2008/slow5tools):
+```
+slow5tools merge [sequencing_run1].blow5 [sequencing_run2].blow5 -o merged.blow5
+```
+### 5.2 f5c index
+```
+f5c index --slow5 merged.blow5 reads.fasta
+```
+### 5.3 f5c eventalign
+```
+f5c eventalign \
+   -r reads.fasta \
+   -b reads_primary_sorted.bam \
+   -g reference.fasta \
+   --slow5 merged.blow5 \
+   --rna \
+   --pore rna004 \
+   --print-read-names \
+   --collapse-events \
+   --min-recalib 10 \       # Lowered because of small tRNAs  
+   --min-mapq . \           # Default is 20, optimal value depends on quality of input data
+   --scale-events \         # to account for variation between nanopores
+   --signal-index \         # Required to infer dwells in downstream analysis
+   > f5c_eventalign.tsv
+```
+In addition to the command-line settings, some internal parameters are adjusted to relax the filtering for reads and adjust to the characteristics of the tRNA-sequencing data by explorative tuning:
+- Threshold of [minimum logarithmic average of the emission probability](https://github.com/hasindu2008/f5c/blob/a88df46949148d2e82b431f745bef0c32a396637/src/align.c#L199) of a read to be aligned was lowered from the default -5.0 to-9.0 to ensure more reads are being used in the signal alignment.
+- Threshold of the [number of events per base a read](https://github.com/hasindu2008/f5c/blob/a88df46949148d2e82b431f745bef0c32a396637/src/f5c.c#L799) is allowed to have is increased from 5.0 to 20.0, to ensure that poorer quality reads are not discarded.
