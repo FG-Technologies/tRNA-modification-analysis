@@ -3,7 +3,7 @@ This repository provides a workflow for predicting modified positions within tRN
 
 <img src="workflow.jpg" alt="Workflow of tRNA modifications analysis" width="500">
 
-Content:
+## Content:
 1. [Dorado basecalling](#1-dorado-basecalling)
 2. [Sequence alignment using BWA-MEM](#2-sequence-alignment-using-bwa-mem)
 3. [Select only forward primary reads](#3-select-only-forward-primary-reads)
