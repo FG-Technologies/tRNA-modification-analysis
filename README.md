@@ -1,7 +1,7 @@
 # tRNA modifications analysis
 This repository provides a workflow for predicting modified positions within tRNAs using direct tRNA-sequencing. 
 
-<img src="workflow.jpg" alt="Workflow of tRNA modifications analysis" width="500">
+<img src="workflow_github.jpg" alt="Workflow of tRNA modifications analysis" width="500">
 
 ## Content:
 1. [Dorado basecalling](#1-dorado-basecalling)
