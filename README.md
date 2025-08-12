@@ -16,13 +16,13 @@ Steps:
    
    5.3 [f5c eventalign](#53-f5c-eventalign)
    
-   5.4 [Ionic current analysis](#54-ionic-current-analysis)
+   5.4 [f5c's ionic current analysis](#54-f5cs-ionic-current-analysis)
    
-7. Remora signal alignment
+7. [Remora signal alignment](#remora-signal-alignment)
    
-   a. Prepare bam file
+   7.1 [Preparation](#71-remora-signal-alignment)
    
-   b. Ionic current analysis
+   b. [Ionic current analysis](#72-ionic-current-analysis)
    
 9. Basecalled modification analysis
 10. Look for sequence mismatches
@@ -108,3 +108,17 @@ f5c eventalign \
 In addition to the command-line settings, some internal parameters are adjusted to relax the filtering for reads and adjust to the characteristics of the tRNA-sequencing data by explorative tuning:
 - Threshold of [minimum logarithmic average of the emission probability](https://github.com/hasindu2008/f5c/blob/a88df46949148d2e82b431f745bef0c32a396637/src/align.c#L199) of a read to be aligned was lowered from the default -5.0 to-9.0 to ensure more reads are being used in the signal alignment.
 - Threshold of the [number of events per base a read](https://github.com/hasindu2008/f5c/blob/a88df46949148d2e82b431f745bef0c32a396637/src/f5c.c#L799) is allowed to have is increased from 5.0 to 20.0, to ensure that poorer quality reads are not discarded.
+
+### 5.4 f5c's ionic current analysis 
+Further downstream analysis of the f5c_eventalign.tsv file is described in the Python Jupyter notebook [F5c_ionic_current_analysis_tRNAs](F5c_ionic_current_analysis_tRNAs.ipynb). This notebook also describes how to obtain the read-IDs which are select by f5c and save them in a .txt file. To use the same selection of reads in downstream analyses, use:
+```
+samtools view -b -N selection_read_IDs.txt reads_primary_sorted.bam > selected_reads_primary.bam
+```
+## 7. Remora signal alignment
+### 7.1 Preparation
+Remora requires a bam file in which -mv tag (move table) is remained after sequence alignment. Because BWA-MEM alignment does not include this option, the required bam tags stored in the raw reads.bam are copied into the aligned_reads.bam, using the python script [bamfile_preparation_for_Remora](bamfile_preparation_for_Remora.py).
+
+### 7.2 Remora's ionic current analysis
+The signal alignment and further downstream analysis of ionic currents are described in the Python Jupyter notebook [Remora_ionic_current_analysis_tRNAs](Remora_ionic_current_analysis_tRNAs.ipynb). 
+
+### 7.2 Ionic current analysis
