@@ -141,6 +141,7 @@ For the IVT-samples no modifications are expected, therefore the filtering thres
 Further analysis is described in the Python Jupyter notebook [Basecalled_modifications_modkit_analysis_tRNAs](Basecalled_modifications_modkit_analysis_tRNAs.ipynb).
 
 ## 8. Look for sequence mismatches
+Positions with sequence mismatches compared to the reference can be considered within this analysis, because they could indicate inconsistency in canonical basecalling, potentially caused by deviant ionic currents due to undetected modifications. Positions with sequence mismatches within the control IVT-sample suggest unreliability and should be excluded in statistical comparison between the biological and IVT sample.
 Sequence mismatches are analysed by using the coverage track of IGV with a coverage allele-fraction threshold (quality weighted) of 0.2. This needs to be reported manually in a .csv file with column names 'Position' and 'Percentage mismatch'.
 
 ## 9. Visualise prediction results
