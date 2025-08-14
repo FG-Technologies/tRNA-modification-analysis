@@ -75,8 +75,6 @@ for tRNA in "${!tRNA_insertions[@]}"; do
 	fi
 
 
-	#awk -v seq="$INSERT_SEQ" '$0 ~ /^@/ || ($6 ~ /[0-9]+I/ && $0 ~ seq)' "$OUT_DIR/${tRNA}_reads.sam" > "$OUT_DIR/${tRNA}_filtered.sam"
-	
 	wc -l "$OUT_DIR/${tRNA}_filtered.sam"
 	
     # Convert filtered SAM to BAM
