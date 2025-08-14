@@ -151,4 +151,4 @@ In addition, the signal coverage and dwells of the generated signal alignments b
 
 
 <br><br><br>
-This pipeline is created as part of Master Research Project by Isis van Loenen.
+This pipeline is created as part of the Research Project by Isis van Loenen (Msc Bioinformatics and Systems Biology at Vrije Universiteit Amsterdam).
