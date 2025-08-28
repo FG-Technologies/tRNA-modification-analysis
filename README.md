@@ -44,7 +44,7 @@ In the current study Dorado version [1.0.0](https://github.com/nanoporetech/dora
 
 ## 2. Sequence alignment using BWA-MEM
 For sequence alignments we used [samtools version 1.20](https://github.com/samtools/samtools/releases/tag/1.20) and [BWA-MEM version 0.7.17 (r1188)](https://github.com/lh3/bwa/releases/tag/v0.7.17). 
-Convert the bamfile with unaligned raw reads to fastq file:
+Convert the bamfile with unaligned raw reads to a fastq file:
 ```
 samtools fastq reads.bam > reads.fastq
 ```
@@ -56,7 +56,7 @@ samtools sort aligned_reads.bam > aligned_reads_sorted.bam
 samtools index aligned_reads_sorted.bam
 ```
 ## 3. Select only forward primary mapped reads
-For downstream analysis it is crucial to only use primary forward mapped reads, e.g. with flag 0.
+For downstream analysis it is crucial to only use primary forward mapped reads, i.e. with flag 0.
 ```
 grep ‘^@’ aligned_reads.sam > header.sam
 samtools view -h aligned_reads.sam | awk ‘$2 == 0’ > reads_primary_without_header.sam
@@ -73,7 +73,7 @@ To select the reads which have known intron sequences, a [Bash script](filter_in
 This is done following [f5c workflow](https://github.com/hasindu2008/f5c?tab=readme-ov-file#usage). The full documentation can be found [here](https://hasindu2008.github.io/f5c/docs/overview). 
 
 ### 5.1 Preparation
-Convert the bamfile with unaligned raw reads to fasta file:
+Convert the bamfile with unaligned raw reads to a fasta file:
 ```
 samtools fasta reads.bam > reads.fasta
 ```
